@@ -59,7 +59,7 @@ def main():
 
     args = parser.parse_args()
 
-    checkUrl = re.compile(r'http://www\..*')
+    checkUrl = re.compile(r'http://.*')
 
     if args.add_url:
         url = args.add_url
