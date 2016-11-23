@@ -20,16 +20,17 @@ def addUrl(url, hash=None):
     with open(monitor_file, 'a+') as f:
         f.seek(0, 0)
         text = f.read()
-        if re.search(url, text) is None:
+        if re.search(url+r'\s', text) is None:
             f.seek(0, 2)
             f.write('{}\t{}\n'.format(url, hash))
 def removeUrl(url):
-    with open(monitor_file, 'r') as f:
+    with open(monitor_file, 'r+') as f:
         lines = f.readlines()
-    with open(monitor_file, 'w') as f:
+    with open(monitor_file, 'w+') as f:
         for line in lines:
             if re.match(url, line) is None:
                 f.write(line)
+            
 def showActiveUrls():
     try:
         with open(monitor_file, 'r') as f:
@@ -38,18 +39,21 @@ def showActiveUrls():
                 print(url)
     except IOError:
         exit('Couldn\'t open the list')
+
 def check():
     with open(monitor_file, 'r') as f:
-        for line in f.readlines():
-            parts = re.split('\s', line)
-            url, oldHash = parts[0], parts[1]
-            newHash = getUrlHash(url)
-            if oldHash != newHash:
-                print(url+'\t has been changed recently')
-                removeUrl(url)
-                addUrl(url, newHash)
-                webbrowser.open_new(url)
-
+        lines = f.readlines()
+    if len(lines) == 0:
+        exit('There are no urls, or the list doesn\'t exist')
+    for line in lines:
+        parts = re.split(r'\s', line)
+        url, oldHash = parts[0], parts[1]
+        newHash = getUrlHash(url)
+        if oldHash != newHash:
+            print(url +' has been changed recently')
+            removeUrl(url)
+            addUrl(url, newHash)
+            #webbrowser.open_new(url)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a','--add', metavar='URL', dest='add_url', help='Add url to the list')
