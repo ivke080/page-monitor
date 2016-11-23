@@ -53,7 +53,7 @@ def check():
             print(url +' has been changed recently')
             removeUrl(url)
             addUrl(url, newHash)
-            #webbrowser.open_new(url)
+            webbrowser.open_new(url)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a','--add', metavar='URL', dest='add_url', help='Add url to the list')
